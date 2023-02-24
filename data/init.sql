@@ -1,0 +1,37 @@
+USE wiki_backend;
+
+CREATE TABLE article
+(
+  id INT UNSIGNED AUTO_INCREMENT,
+  version INT UNSIGNED,
+  title VARCHAR(200),
+  content MEDIUMTEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_by INT UNSIGNED NOT NULL,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  updated_by INT UNSIGNED,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE tag
+(
+  id INT UNSIGNED AUTO_INCREMENT,
+  text VARCHAR(200) NOT NULL,
+  UNIQUE KEY (text),
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE article_tag
+(
+  article_id INT UNSIGNED,
+  tag_id INT UNSIGNED,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (article_id, tag_id),
+  FOREIGN KEY fk_article_id_key (article_id)
+    REFERENCES article (id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY fk_tag_id_key (tag_id)
+    REFERENCES tag (id)
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
