@@ -60,6 +60,21 @@ final class Connection
         return throw new \RuntimeException("Failed to get last insert id");
     }
 
+    public function beginTransaction(): void
+    {
+        $this->getConnection()->beginTransaction();
+    }
+
+    public function commit(): void
+    {
+        $this->getConnection()->commit();
+    }
+
+    public function rollback(): void
+    {
+        $this->getConnection()->rollBack();
+    }
+
     /**
      * Выполняет ленивое создание объекта PDO, абстрагирующего соединение с базой данных.
      * Устанавливает параметры:
