@@ -25,7 +25,7 @@ class ArticleRepository
               a.version,
               a.title,
               a.content,
-              GROUP_CONCAT(t.text) AS tags,
+              JSON_ARRAYAGG(t.text) AS tags,
               a.created_at,
               a.created_by,
               a.updated_at,
@@ -33,7 +33,7 @@ class ArticleRepository
             FROM article a
               LEFT JOIN article_tag at on a.id = at.article_id
               LEFT JOIN tag t on t.id = at.tag_id
-            WHERE 'a.id = ?'
+            WHERE a.id = ?
             GROUP BY a.id
             SQL;
 
@@ -93,9 +93,9 @@ class ArticleRepository
                 (string)$row['title'],
                 (string)$row['content'],
                 json_decode($row['tags'], true, 512, JSON_THROW_ON_ERROR),
-                new \DateTimeImmutable($row['created_at']),
+                $this->parseDateTimeOrNull($row['created_at']),
                 (int)$row['created_by'],
-                new \DateTimeImmutable($row['updated_at']),
+                $this->parseDateTimeOrNull($row['updated_at']),
                 (int)$row['updated_by']
             );
         }
@@ -170,6 +170,18 @@ class ArticleRepository
         return $dateTime?->format(DatabaseDateFormat::MYSQL_DATETIME_FORMAT);
     }
 
+    private function parseDateTimeOrNull(?string $value): ?\DateTimeImmutable
+    {
+        try
+        {
+            return ($value !== null) ? new \DateTimeImmutable($value, new \DateTimeZone('Etc/UTC')) : null;
+        }
+        catch (\Exception $e)
+        {
+            throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
     private function saveArticleTags(int $articleId, array $tags): void
     {
         $placeholders = substr(str_repeat('?,', count($tags)), 0, -1);
@@ -195,7 +207,7 @@ class ArticleRepository
             FROM tag
             WHERE text IN ($placeholders)
             ON DUPLICATE KEY UPDATE
-              created_at = created_at
+              article_id = article_id
             SQL;
         $this->connection->execute($query, array_merge([$articleId], $tags));
     }

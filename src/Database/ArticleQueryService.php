@@ -24,7 +24,7 @@ class ArticleQueryService
             SELECT
               a.id,
               a.title,
-              GROUP_CONCAT(t.text) AS tags
+              JSON_ARRAYAGG(t.text) AS tags
             FROM article a
               LEFT JOIN article_tag at on a.id = at.article_id
               LEFT JOIN tag t on t.id = at.tag_id

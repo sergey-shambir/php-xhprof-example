@@ -25,11 +25,10 @@ class TagRepository
             return;
         }
 
-        $placeholders = substr(str_repeat('?,', count($tags)), 0, -1);
-
         // NOTE: Предварительная проверка на существование тегов позволяет избежать исчерпания autoincrement id
         //   из-за постепенного роста по мере INSERT ODKU (т.е. UPSERT).
-        $stmt = $this->connection->execute('SELECT text FROM tag WHERE text IN ($placeholders)', $tags);
+        $placeholders = self::getCommaSeparatedList('?', count($tags));
+        $stmt = $this->connection->execute("SELECT text FROM tag WHERE text IN ($placeholders)", $tags);
         $existingTags = $stmt->fetchAll(\PDO::FETCH_COLUMN);
         $newTags = array_values(array_diff($tags, $existingTags));
 
@@ -39,16 +38,23 @@ class TagRepository
         }
 
         // NOTE: Используется INSERT ODKU (UPSERT) на случай, если параллельно записываются другие теги.
+        $placeholders = self::getCommaSeparatedList('(?)', count($newTags));
         $this->connection->execute(
             <<<SQL
             INSERT INTO tag
               (text)
             VALUES
-              ($placeholders)
+              $placeholders
             ON DUPLICATE KEY UPDATE
               text = text
             SQL,
             $newTags
         );
+    }
+
+    public static function getCommaSeparatedList(string $item, int $count): string
+    {
+        $items = array_fill(0, $count, $item);
+        return implode(', ', $items);
     }
 }

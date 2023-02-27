@@ -50,9 +50,9 @@ class ArticleApiController
         {
             return $this->badRequest($response, $exception->getFieldErrors());
         }
-        catch (ArticleNotFoundException $e)
+        catch (ArticleNotFoundException $exception)
         {
-            return $this->badRequest($response, ['id' => $e->getMessage()]);
+            return $this->badRequest($response, ['id' => $exception->getMessage()]);
         }
         return $this->success($response, ArticleApiResponseFormatter::formatArticle($article));
     }
@@ -78,13 +78,16 @@ class ArticleApiController
         try
         {
             $params = ArticleApiRequestParser::parseEditArticleParams((array)$request->getParsedBody());
+            ServiceProvider::getInstance()->getArticleService()->editArticle($params);
         }
         catch (RequestValidationException $exception)
         {
             return $this->badRequest($response, $exception->getFieldErrors());
         }
-
-        ServiceProvider::getInstance()->getArticleService()->editArticle($params);
+        catch (ArticleNotFoundException $exception)
+        {
+            return $this->badRequest($response, ['id' => $exception->getMessage()]);
+        }
 
         return $this->success($response, []);
     }

@@ -60,6 +60,11 @@ class ArticleService
 
     }
 
+    /**
+     * @param EditArticleParams $params
+     * @return void
+     * @throws ArticleNotFoundException
+     */
     public function editArticle(EditArticleParams $params): void
     {
         $this->synchronization->doWithTransaction(function () use ($params) {
