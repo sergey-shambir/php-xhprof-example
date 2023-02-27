@@ -11,9 +11,9 @@ class CreateArticleParams
     private array $tags;
 
     /**
+     * @param int $userId
      * @param string $title
      * @param string[] $tags
-     * @param int $userId
      */
     public function __construct(
         int $userId,

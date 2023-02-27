@@ -12,6 +12,7 @@
   "require": {
     "ext-pdo": "*",
     "ext-ctype": "*",
+    "ext-mbstring": "*",
     "slim/slim": "4.11.0",
     "slim/psr7": "1.3.0"
   }
