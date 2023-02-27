@@ -45,15 +45,19 @@ class ArticleRepository
 
     public function save(Article $article): int
     {
-        // TODO: Добавить управление транзакцией
-        // TODO: обновлять список тегов
-
-        if ($article->getId())
+        $articleId = $article->getId();
+        if ($articleId)
         {
             $this->updateArticle($article);
-            return $article->getId();
         }
-        return $this->insertArticle($article);
+        else
+        {
+            $articleId = $this->insertArticle($article);
+        }
+
+        $this->saveArticleTags($articleId, $article->getTags());
+
+        return $articleId;
     }
 
     /**
@@ -62,7 +66,12 @@ class ArticleRepository
      */
     public function delete(array $ids): void
     {
-        $placeholders = substr(str_repeat('?,', 5), 0, -1);
+        if (count($ids) === 0)
+        {
+            return;
+        }
+
+        $placeholders = substr(str_repeat('?,', count($ids)), 0, -1);
         $this->connection->execute(
             <<<SQL
             DELETE FROM article WHERE id IN ($placeholders)
@@ -179,5 +188,35 @@ class ArticleRepository
     private function formatDateTimeOrNull(?\DateTimeImmutable $dateTime): ?string
     {
         return $dateTime?->format(DatabaseDateFormat::MYSQL_DATETIME_FORMAT);
+    }
+
+    private function saveArticleTags(int $articleId, array $tags): void
+    {
+        $placeholders = substr(str_repeat('?,', count($tags)), 0, -1);
+
+        // Удаление связей с тегами, которые больше не относятся к статье
+        $this->connection->execute(
+            <<<SQL
+            DELETE at
+            FROM article_tag at
+              INNER JOIN tag t on at.tag_id = t.id
+            WHERE t.text NOT IN ($placeholders)
+            SQL,
+            $tags
+        );
+
+        // Создание связей с тегами, указанными для статьи
+        // NOTE: Используется INSERT ODKU (UPSERT), чтобы пропустить ранее добавленные теги.
+        $query = <<<SQL
+            INSERT INTO article_tag (article_id, tag_id)
+            SELECT
+              ?,
+              id
+            FROM tag
+            WHERE text IN ($placeholders)
+            ON DUPLICATE KEY UPDATE
+              created_at = created_at
+            SQL;
+        $this->connection->execute($query, array_merge([$articleId], $tags));
     }
 }

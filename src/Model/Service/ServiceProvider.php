@@ -5,12 +5,14 @@ namespace App\Model\Service;
 
 use App\Common\Database\ConnectionProvider;
 use App\Database\ArticleRepository;
+use App\Database\TagRepository;
 
 final class ServiceProvider
 {
     private ?ArticleService $articleService = null;
     private ?ArticleListService $articleListService = null;
     private ?ArticleRepository $articleRepository = null;
+    private ?TagRepository $tagRepository = null;
 
     public static function getInstance(): self
     {
@@ -26,7 +28,7 @@ final class ServiceProvider
     {
         if ($this->articleService === null)
         {
-            $this->articleService = new ArticleService($this->getArticleRepository());
+            $this->articleService = new ArticleService($this->getArticleRepository(), $this->getTagRepository());
         }
         return $this->articleService;
     }
@@ -47,5 +49,14 @@ final class ServiceProvider
             $this->articleRepository = new ArticleRepository(ConnectionProvider::getConnection());
         }
         return $this->articleRepository;
+    }
+
+    private function getTagRepository(): TagRepository
+    {
+        if ($this->tagRepository === null)
+        {
+            $this->tagRepository = new TagRepository(ConnectionProvider::getConnection());
+        }
+        return $this->tagRepository;
     }
 }

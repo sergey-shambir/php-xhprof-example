@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Service;
 
 use App\Database\ArticleRepository;
+use App\Database\TagRepository;
 use App\Model\Article;
 use App\Model\Data\CreateArticleParams;
 use App\Model\Data\EditArticleParams;
@@ -11,11 +12,13 @@ use App\Model\Exception\ArticleNotFoundException;
 
 class ArticleService
 {
-    private ArticleRepository $repository;
+    private ArticleRepository $articleRepository;
+    private TagRepository $tagRepository;
 
-    public function __construct(ArticleRepository $repository)
+    public function __construct(ArticleRepository $articleRepository, TagRepository $tagRepository)
     {
-        $this->repository = $repository;
+        $this->articleRepository = $articleRepository;
+        $this->tagRepository = $tagRepository;
     }
 
     /**
@@ -25,7 +28,7 @@ class ArticleService
      */
     public function getArticle(int $id): Article
     {
-        $article = $this->repository->findOne($id);
+        $article = $this->articleRepository->findOne($id);
         if (!$article)
         {
             throw new ArticleNotFoundException("Cannot find article with id $id");
@@ -35,6 +38,10 @@ class ArticleService
 
     public function createArticle(CreateArticleParams $params): int
     {
+        // TODO: Добавить управление транзакцией
+
+        $this->tagRepository->addTags($params->getTags());
+
         $article = new Article(
             null,
             1,
@@ -46,7 +53,7 @@ class ArticleService
             null,
             null
         );
-        return $this->repository->save($article);
+        return $this->articleRepository->save($article);
     }
 
     /**
@@ -56,13 +63,17 @@ class ArticleService
      */
     public function editArticle(EditArticleParams $params): void
     {
+        // TODO: Добавить управление транзакцией
+
+        $this->tagRepository->addTags($params->getTags());
+
         $article = $this->getArticle($params->getId());
         $article->edit($params->getUserId(), $params->getTitle(), $params->getContent(), $params->getTags());
-        $this->repository->save($article);
+        $this->articleRepository->save($article);
     }
 
     public function deleteArticle(int $id): void
     {
-        $this->repository->delete([$id]);
+        $this->articleRepository->delete([$id]);
     }
 }
