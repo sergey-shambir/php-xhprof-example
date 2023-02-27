@@ -18,8 +18,8 @@ class ArticleApiController
 
     public function listArticles(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $articles = ServiceProvider::getInstance()->getArticleListService()->listArticles();
-        $responseData = ArticleApiResponseFormatter::formatArticleList($articles);
+        $articles = ServiceProvider::getInstance()->getArticleQueryService()->listArticles();
+        $responseData = ArticleApiResponseFormatter::formatArticleSummaryList($articles);
 
         return $this->success($response, $responseData);
     }
@@ -35,7 +35,7 @@ class ArticleApiController
             return $this->badRequest($response, $exception->getFieldErrors());
         }
 
-        ServiceProvider::getInstance()->getArticleListService()->batchDeleteArticles($ids);
+        ServiceProvider::getInstance()->getArticleService()->batchDeleteArticles($ids);
         return $response;
     }
 
@@ -119,7 +119,7 @@ class ArticleApiController
     {
         try
         {
-            $responseBytes = json_encode($response, JSON_THROW_ON_ERROR);
+            $responseBytes = json_encode($responseData, JSON_THROW_ON_ERROR);
             $response->getBody()->write($responseBytes);
             return $response->withHeader('Content-Type', 'application/json');
         }

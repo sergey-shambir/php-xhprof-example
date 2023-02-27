@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace App\Model\Service;
 
 use App\Common\Database\ConnectionProvider;
+use App\Common\Database\Synchronization;
+use App\Database\ArticleQueryService;
 use App\Database\ArticleRepository;
 use App\Database\TagRepository;
 
 final class ServiceProvider
 {
     private ?ArticleService $articleService = null;
-    private ?ArticleListService $articleListService = null;
+    private ?ArticleQueryService $articleQueryService = null;
     private ?ArticleRepository $articleRepository = null;
     private ?TagRepository $tagRepository = null;
 
@@ -28,18 +30,19 @@ final class ServiceProvider
     {
         if ($this->articleService === null)
         {
-            $this->articleService = new ArticleService($this->getArticleRepository(), $this->getTagRepository());
+            $synchronization = new Synchronization(ConnectionProvider::getConnection());
+            $this->articleService = new ArticleService($synchronization, $this->getArticleRepository(), $this->getTagRepository());
         }
         return $this->articleService;
     }
 
-    public function getArticleListService(): ArticleListService
+    public function getArticleQueryService(): ArticleQueryService
     {
-        if ($this->articleListService === null)
+        if ($this->articleQueryService === null)
         {
-            $this->articleListService = new ArticleListService($this->getArticleRepository());
+            $this->articleQueryService = new ArticleQueryService(ConnectionProvider::getConnection());
         }
-        return $this->articleListService;
+        return $this->articleQueryService;
     }
 
     private function getArticleRepository(): ArticleRepository

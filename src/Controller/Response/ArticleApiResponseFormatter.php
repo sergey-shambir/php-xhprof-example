@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Response;
 
 use App\Model\Article;
+use App\Model\Data\ArticleSummary;
 
 class ArticleApiResponseFormatter
 {
@@ -21,12 +22,21 @@ class ArticleApiResponseFormatter
         ];
     }
 
+    public static function formatArticleSummary(ArticleSummary $article): array
+    {
+        return [
+            'id' => $article->getId(),
+            'title' => $article->getTitle(),
+            'tags' => $article->getTags(),
+        ];
+    }
+
     /**
-     * @param Article[] $articles
+     * @param ArticleSummary[] $articles
      * @return array
      */
-    public static function formatArticleList(array $articles): array
+    public static function formatArticleSummaryList(array $articles): array
     {
-        return array_map(static fn($article) => self::formatArticle($article), $articles);
+        return array_map(static fn($article) => self::formatArticleSummary($article), $articles);
     }
 }

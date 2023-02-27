@@ -75,4 +75,13 @@ class ArticleService
     {
         $this->articleRepository->delete([$id]);
     }
+
+    /**
+     * @param int[] $ids
+     * @return void
+     */
+    public function batchDeleteArticles(array $ids): void
+    {
+        $this->articleRepository->delete($ids);
+    }
 }

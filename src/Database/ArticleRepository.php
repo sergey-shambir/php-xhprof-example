@@ -19,7 +19,24 @@ class ArticleRepository
 
     public function findOne(int $id): ?Article
     {
-        $query = $this->getSelectArticlesQuery(['a.id = ?']);
+        $query = <<<SQL
+            SELECT
+              a.id,
+              a.version,
+              a.title,
+              a.content,
+              GROUP_CONCAT(t.text) AS tags,
+              a.created_at,
+              a.created_by,
+              a.updated_at,
+              a.updated_by
+            FROM article a
+              LEFT JOIN article_tag at on a.id = at.article_id
+              LEFT JOIN tag t on t.id = at.tag_id
+            WHERE 'a.id = ?'
+            GROUP BY a.id
+            SQL;
+
         $params = [$id];
         $stmt = $this->connection->execute($query, $params);
         if ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
@@ -27,20 +44,6 @@ class ArticleRepository
             return $this->hydrateArticle($row);
         }
         return null;
-    }
-
-    /**
-     * @return Article[]
-     */
-    public function findAll(): array
-    {
-        $query = $this->getSelectArticlesQuery();
-        $stmt = $this->connection->execute($query);
-
-        return array_map(
-            fn($row) => $this->hydrateArticle($row),
-            $stmt->fetchAll(\PDO::FETCH_ASSOC)
-        );
     }
 
     public function save(Article $article): int
@@ -78,29 +81,6 @@ class ArticleRepository
             SQL,
             $ids
         );
-    }
-
-    private function getSelectArticlesQuery(array $conditions = []): string
-    {
-        $conditionsString = count($conditions) > 0 ? implode(' AND ', $conditions) : 'TRUE';
-
-        return <<<SQL
-            SELECT
-              a.id,
-              a.version,
-              a.title,
-              a.content,
-              GROUP_CONCAT(t.text) AS tags,
-              a.created_at,
-              a.created_by,
-              a.updated_at,
-              a.updated_by
-            FROM article a
-              LEFT JOIN article_tag at on a.id = at.article_id
-              LEFT OUTER JOIN tag t on t.id = at.tag_id
-            WHERE $conditionsString
-            GROUP BY a.id
-            SQL;
     }
 
     private function hydrateArticle(array $row): Article
