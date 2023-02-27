@@ -51,6 +51,15 @@ final class Connection
         return $this->getConnection()->prepare($sql);
     }
 
+    public function getLastInsertId(): int
+    {
+        if ($lastInsertId = $this->getConnection()->lastInsertId())
+        {
+            return (int)$lastInsertId;
+        }
+        return throw new \RuntimeException("Failed to get last insert id");
+    }
+
     /**
      * Выполняет ленивое создание объекта PDO, абстрагирующего соединение с базой данных.
      * Устанавливает параметры:

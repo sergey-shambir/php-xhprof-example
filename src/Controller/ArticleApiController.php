@@ -5,4 +5,5 @@ namespace App\Controller;
 
 class ArticleApiController
 {
+    // TODO: реализовать обработку запросов к API
 }
