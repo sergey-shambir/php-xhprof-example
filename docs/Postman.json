@@ -1,0 +1,286 @@
+{
+	"version": 1,
+	"collections": [
+		{
+			"id": "384b9619-ba53-474a-a475-5485f0952830",
+			"uid": "0-384b9619-ba53-474a-a475-5485f0952830",
+			"name": "wiki-backend",
+			"description": null,
+			"auth": null,
+			"events": null,
+			"variables": [],
+			"order": [
+				"f8fe31c2-e531-473a-8139-070f19f665f4",
+				"ca787c1d-36c9-4c17-93bd-5a26b67f248c",
+				"a1364376-624e-4b0a-a722-881d6e0400aa",
+				"a73d1613-6e85-42e4-9650-0e82c45f4da3",
+				"77230472-5175-40b0-b581-e2a88e9d3af2",
+				"6798cb93-1208-4aa7-b481-2d9d09e60f62"
+			],
+			"folders_order": [],
+			"protocolProfileBehavior": {},
+			"createdAt": "2023-02-27T19:05:03.901Z",
+			"folders": [],
+			"requests": [
+				{
+					"id": "6798cb93-1208-4aa7-b481-2d9d09e60f62",
+					"uid": "0-6798cb93-1208-4aa7-b481-2d9d09e60f62",
+					"name": "batchDeleteArticles",
+					"url": "http://localhost/articles/batch-delete?ids[0]=4&ids[1]=5",
+					"description": null,
+					"data": [
+						{
+							"key": "id",
+							"value": "2",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "DELETE",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "ids[0]",
+							"value": "4",
+							"equals": true,
+							"description": null,
+							"enabled": true
+						},
+						{
+							"key": "ids[1]",
+							"value": "5",
+							"equals": true,
+							"description": null,
+							"enabled": true
+						}
+					],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "384b9619-ba53-474a-a475-5485f0952830",
+					"pathVariables": {}
+				},
+				{
+					"id": "77230472-5175-40b0-b581-e2a88e9d3af2",
+					"uid": "0-77230472-5175-40b0-b581-e2a88e9d3af2",
+					"name": "deleteArticle",
+					"url": "http://localhost/article/delete",
+					"description": null,
+					"data": [
+						{
+							"key": "id",
+							"value": "2",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "DELETE",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "384b9619-ba53-474a-a475-5485f0952830",
+					"pathVariables": {}
+				},
+				{
+					"id": "a1364376-624e-4b0a-a722-881d6e0400aa",
+					"uid": "0-a1364376-624e-4b0a-a722-881d6e0400aa",
+					"name": "getArticle",
+					"url": "http://localhost/article?id=3",
+					"description": null,
+					"data": [],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [
+						{
+							"key": "id",
+							"value": "3",
+							"equals": true,
+							"description": null,
+							"enabled": true
+						}
+					],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "384b9619-ba53-474a-a475-5485f0952830",
+					"pathVariables": {}
+				},
+				{
+					"id": "a73d1613-6e85-42e4-9650-0e82c45f4da3",
+					"uid": "0-a73d1613-6e85-42e4-9650-0e82c45f4da3",
+					"name": "editArticle",
+					"url": "http://localhost/article/edit",
+					"description": null,
+					"data": [
+						{
+							"key": "id",
+							"value": "3",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "12",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "title",
+							"value": "13.3 Transactional and Locking Statements",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "tags[0]",
+							"value": "MySQL",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "tags[1]",
+							"value": "Transactions",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "tags[2]",
+							"value": "Concurrency",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "content",
+							"value": "These statements provide control over use of transactions:\n\nSTART TRANSACTION or BEGIN start a new transaction.\n\nCOMMIT commits the current transaction, making its changes permanent.\n\nROLLBACK rolls back the current transaction, canceling its changes.\n\nSET autocommit disables or enables the default autocommit mode for the current session.\n\nBy default, MySQL runs with autocommit mode enabled. This means that, when not otherwise inside a transaction, each statement is atomic, as if it were surrounded by START TRANSACTION and COMMIT. You cannot use ROLLBACK to undo the effect; however, if an error occurs during statement execution, the statement is rolled back.\n\nTo disable autocommit mode implicitly for a single series of statements, use the START TRANSACTION statement",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "384b9619-ba53-474a-a475-5485f0952830",
+					"pathVariables": {}
+				},
+				{
+					"id": "ca787c1d-36c9-4c17-93bd-5a26b67f248c",
+					"uid": "0-ca787c1d-36c9-4c17-93bd-5a26b67f248c",
+					"name": "createArticle",
+					"url": "http://localhost/article",
+					"description": null,
+					"data": [
+						{
+							"key": "user_id",
+							"value": "10",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "title",
+							"value": "13.3 Transactional and Locking Statements",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "tags[]",
+							"value": "MySQL",
+							"description": "",
+							"type": "text",
+							"enabled": true
+						}
+					],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "POST",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "384b9619-ba53-474a-a475-5485f0952830",
+					"pathVariables": {}
+				},
+				{
+					"id": "f8fe31c2-e531-473a-8139-070f19f665f4",
+					"uid": "0-f8fe31c2-e531-473a-8139-070f19f665f4",
+					"name": "listArticles",
+					"url": "http://localhost/articles/list",
+					"description": null,
+					"data": [],
+					"dataOptions": null,
+					"dataMode": "params",
+					"headerData": null,
+					"method": "GET",
+					"pathVariableData": [],
+					"queryParams": [],
+					"auth": null,
+					"events": null,
+					"folder": null,
+					"responses_order": [],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"currentHelper": null,
+					"helperAttributes": null,
+					"collectionId": "384b9619-ba53-474a-a475-5485f0952830",
+					"pathVariables": {}
+				}
+			]
+		}
+	],
+	"environments": [
+		{
+			"id": "84730b0a-b052-45f5-af70-8bc47b08c6b8",
+			"name": "My Workspace - globals",
+			"values": []
+		}
+	],
+	"headerPresets": [],
+	"globals": []
+}
