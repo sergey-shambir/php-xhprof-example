@@ -33,6 +33,11 @@ docker-compose up -d
 # Проверить состояние контейнеров
 docker-compose ps
 
+# Инициализация баз данных
+docker exec -i wiki-backend-db mysql -proh6shiD <data/init.sql && echo OK
+
+docker exec -i wiki-backend-tests-db mysql -proh6shiD <data/init.sql && echo OK
+
 # Смотреть логи контейнеров (Ctrl+C для остановки)
 docker-compose logs -f
 
@@ -41,6 +46,7 @@ docker/bin/wiki-backend-app-bash
 
 # Остановить контейнеры
 docker-compose down --remove-orphans
+
 ```
 
 Чистка данных:

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Common\Database;
 
-class Synchronization
+class TransactionalExecutor
 {
     private Connection $connection;
 

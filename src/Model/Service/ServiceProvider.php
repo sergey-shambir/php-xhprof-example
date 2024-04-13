@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Service;
 
 use App\Common\Database\ConnectionProvider;
-use App\Common\Database\Synchronization;
+use App\Common\Database\TransactionalExecutor;
 use App\Database\ArticleQueryService;
 use App\Database\ArticleRepository;
 use App\Database\TagRepository;
@@ -30,7 +30,7 @@ final class ServiceProvider
     {
         if ($this->articleService === null)
         {
-            $synchronization = new Synchronization(ConnectionProvider::getConnection());
+            $synchronization = new TransactionalExecutor(ConnectionProvider::getConnection());
             $this->articleService = new ArticleService($synchronization, $this->getArticleRepository(), $this->getTagRepository());
         }
         return $this->articleService;

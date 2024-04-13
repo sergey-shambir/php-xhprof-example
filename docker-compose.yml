@@ -54,5 +54,25 @@ services:
     ports:
       - "127.0.0.1:3306:3306"
 
+  wiki-backend-tests-db:
+    image: mysql:8.0.32
+    container_name: wiki-backend-tests-db
+    hostname: wiki-backend-tests-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=roh6shiD
+      - MYSQL_USER=wiki-backend-app
+      - MYSQL_PASSWORD=ahm3eKoh
+      - MYSQL_DATABASE=wiki_backend
+    volumes:
+      - $PWD/docker/config/mysql.conf.d:/etc/mysql/conf.d/:ro
+      - wiki_backend_test_db_data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:13306:3306"
+
 volumes:
   wiki_backend_db_data:
+
+  wiki_backend_test_db_data:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

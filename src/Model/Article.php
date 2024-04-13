@@ -5,21 +5,6 @@ namespace App\Model;
 
 class Article
 {
-    private ?int $id;
-    // NOTE: Поле $version используется для оптимистичной блокировки
-    private int $version;
-    private string $title;
-    private string $content;
-    /**
-     * @var string[]
-     */
-    private array $tags;
-
-    private \DateTimeImmutable $createdAt;
-    private int $createdBy;
-    private ?\DateTimeImmutable $updatedAt;
-    private ?int $updatedBy;
-
     /**
      * @param int|null $id
      * @param int $version
@@ -30,28 +15,21 @@ class Article
      * @param int $createdBy
      * @param \DateTimeImmutable|null $updatedAt
      * @param int|null $updatedBy
+     *
+     * @note поле $version используется для оптимистичной блокировки сущности
      */
     public function __construct(
-        ?int $id,
-        int $version,
-        string $title,
-        string $content,
-        array $tags,
-        \DateTimeImmutable $createdAt,
-        int $createdBy,
-        ?\DateTimeImmutable $updatedAt,
-        ?int $updatedBy
+        private ?int $id,
+        private int $version,
+        private string $title,
+        private string $content,
+        private array $tags,
+        private \DateTimeImmutable $createdAt,
+        private int $createdBy,
+        private ?\DateTimeImmutable $updatedAt = null,
+        private ?int $updatedBy = null
     )
     {
-        $this->id = $id;
-        $this->version = $version;
-        $this->title = $title;
-        $this->content = $content;
-        $this->tags = $tags;
-        $this->createdAt = $createdAt;
-        $this->createdBy = $createdBy;
-        $this->updatedAt = $updatedAt;
-        $this->updatedBy = $updatedBy;
     }
 
     /**

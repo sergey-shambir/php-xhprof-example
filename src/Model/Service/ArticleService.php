@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Service;
 
-use App\Common\Database\Synchronization;
+use App\Common\Database\TransactionalExecutor;
 use App\Database\ArticleRepository;
 use App\Database\TagRepository;
 use App\Model\Article;
@@ -11,17 +11,13 @@ use App\Model\Data\CreateArticleParams;
 use App\Model\Data\EditArticleParams;
 use App\Model\Exception\ArticleNotFoundException;
 
-class ArticleService
+readonly class ArticleService
 {
-    private Synchronization $synchronization;
-    private ArticleRepository $articleRepository;
-    private TagRepository $tagRepository;
-
-    public function __construct(Synchronization $synchronization, ArticleRepository $articleRepository, TagRepository $tagRepository)
+    public function __construct(
+        private TransactionalExecutor $transactionalExecutor,
+        private ArticleRepository $articleRepository,
+        private TagRepository $tagRepository)
     {
-        $this->synchronization = $synchronization;
-        $this->articleRepository = $articleRepository;
-        $this->tagRepository = $tagRepository;
     }
 
     /**
@@ -41,7 +37,7 @@ class ArticleService
 
     public function createArticle(CreateArticleParams $params): int
     {
-        return $this->synchronization->doWithTransaction(function () use ($params) {
+        return $this->transactionalExecutor->doWithTransaction(function () use ($params) {
             $this->tagRepository->addTags($params->getTags());
 
             $article = new Article(
@@ -67,7 +63,7 @@ class ArticleService
      */
     public function editArticle(EditArticleParams $params): void
     {
-        $this->synchronization->doWithTransaction(function () use ($params) {
+        $this->transactionalExecutor->doWithTransaction(function () use ($params) {
             $this->tagRepository->addTags($params->getTags());
 
             $article = $this->getArticle($params->getId());
