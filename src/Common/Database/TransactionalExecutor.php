@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Common\Database;
 
-class TransactionalExecutor
+class TransactionalExecutor implements TransactionalExecutorInterface
 {
     private Connection $connection;
 

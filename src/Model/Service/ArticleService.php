@@ -3,20 +3,20 @@ declare(strict_types=1);
 
 namespace App\Model\Service;
 
-use App\Common\Database\TransactionalExecutor;
-use App\Database\ArticleRepository;
-use App\Database\TagRepository;
+use App\Common\Database\TransactionalExecutorInterface;
 use App\Model\Article;
 use App\Model\Data\CreateArticleParams;
 use App\Model\Data\EditArticleParams;
 use App\Model\Exception\ArticleNotFoundException;
+use App\Model\Repository\ArticleRepositoryInterface;
+use App\Model\Repository\TagRepositoryInterface;
 
 readonly class ArticleService
 {
     public function __construct(
-        private TransactionalExecutor $transactionalExecutor,
-        private ArticleRepository $articleRepository,
-        private TagRepository $tagRepository)
+        private TransactionalExecutorInterface $transactionalExecutor,
+        private ArticleRepositoryInterface $articleRepository,
+        private TagRepositoryInterface $tagRepository)
     {
     }
 

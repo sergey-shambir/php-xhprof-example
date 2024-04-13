@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace App\Database;
 
 use App\Common\Database\Connection;
+use App\Model\Repository\TagRepositoryInterface;
 
-class TagRepository
+class TagRepository implements TagRepositoryInterface
 {
     private Connection $connection;
 

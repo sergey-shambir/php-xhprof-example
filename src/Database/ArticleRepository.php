@@ -7,8 +7,9 @@ use App\Common\Database\Connection;
 use App\Common\Database\DatabaseDateFormat;
 use App\Model\Article;
 use App\Model\Exception\OptimisticLockException;
+use App\Model\Repository\ArticleRepositoryInterface;
 
-class ArticleRepository
+class ArticleRepository implements ArticleRepositoryInterface
 {
     private Connection $connection;
 
