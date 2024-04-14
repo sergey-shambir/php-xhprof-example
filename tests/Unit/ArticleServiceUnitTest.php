@@ -7,23 +7,87 @@ use App\Model\Article;
 use App\Model\Data\CreateArticleParams;
 use App\Model\Data\EditArticleParams;
 use App\Model\Exception\ArticleNotFoundException;
+use App\Model\Repository\TagRepositoryInterface;
 use App\Model\Service\ArticleService;
-use App\Tests\TestDouble\DummyTagRepository;
 use App\Tests\TestDouble\DummyTransactionalExecutor;
 use App\Tests\TestDouble\FakeArticleRepository;
+use App\Tests\TestDouble\MockTagRepository;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Это ПЛОХОЙ пример: тест, который использует тестовые дублёры вместо реальных классов Repository.
+ * В реальном проекте следует писать интеграционный (компонентный или функциональный) тест, а не играться с дублёрами!
  */
 class ArticleServiceUnitTest extends TestCase
 {
-    public function testCreateEditAndDeleteArticle(): void
+    public function testCreateArticleV1(): void
     {
         // Шаг 1. Arrange
         // В данном случае мы только создаём сервис
-        $service = $this->createArticleService();
+        $tagRepositoryMock = new MockTagRepository();
+        $service = new ArticleService(
+            new DummyTransactionalExecutor(),
+            new FakeArticleRepository(),
+            $tagRepositoryMock
+        );
         $firstAuthorId = 10;
+
+        // Шаг 2. Act
+        $articleId = $service->createArticle(new CreateArticleParams(
+            userId: $firstAuthorId,
+            title: '(Черновик) B+ деревья',
+            tags: ['MySQL', 'PostgreSQL'],
+        ));
+
+        // Шаг 3. Assert
+        $article = $service->getArticle($articleId);
+        $this->assertEquals('(Черновик) B+ деревья', $article->getTitle());
+        $this->assertArticleTags(['MySQL', 'PostgreSQL'], $article);
+        $this->assertEquals($firstAuthorId, $article->getCreatedBy());
+        $this->assertEquals($tagRepositoryMock->getTags(), ['MySQL', 'PostgreSQL']);
+    }
+
+    public function testCreateArticleV2(): void
+    {
+        // Шаг 1. Arrange
+        // В данном случае мы только создаём сервис
+        $tagRepositoryMock = $this->createMock(TagRepositoryInterface::class);
+        $service = new ArticleService(
+            new DummyTransactionalExecutor(),
+            new FakeArticleRepository(),
+            $tagRepositoryMock
+        );
+        $firstAuthorId = 10;
+
+        $tagRepositoryMock->expects($this->exactly(1))->method('addTags');
+
+        // Шаг 2. Act
+        $articleId = $service->createArticle(new CreateArticleParams(
+            userId: $firstAuthorId,
+            title: '(Черновик) B+ деревья',
+            tags: ['MySQL', 'PostgreSQL'],
+        ));
+
+        // Шаг 3. Assert
+        $article = $service->getArticle($articleId);
+        $this->assertEquals('(Черновик) B+ деревья', $article->getTitle());
+        $this->assertArticleTags(['MySQL', 'PostgreSQL'], $article);
+        $this->assertEquals($firstAuthorId, $article->getCreatedBy());
+    }
+
+    public function testCreateEditArticle(): void
+    {
+        // Шаг 1. Arrange
+        // В данном случае мы только создаём сервис
+        $tagRepositoryMock = $this->createMock(TagRepositoryInterface::class);
+        $service = new ArticleService(
+            new DummyTransactionalExecutor(),
+            new FakeArticleRepository(),
+            $tagRepositoryMock
+        );
+        $firstAuthorId = 10;
+
+        $tagRepositoryMock->expects($this->exactly(2))->method('addTags');
 
         // Шаг 2. Act
         $articleId = $service->createArticle(new CreateArticleParams(
@@ -72,11 +136,43 @@ class ArticleServiceUnitTest extends TestCase
         $service->getArticle($articleId);
     }
 
+    public function testDeleteArticle(): void
+    {
+        // Шаг 1. Arrange
+        // В данном случае мы только создаём сервис
+        $tagRepositoryMock = $this->createMock(TagRepositoryInterface::class);
+        $service = new ArticleService(
+            new DummyTransactionalExecutor(),
+            new FakeArticleRepository(),
+            $tagRepositoryMock
+        );
+        $firstAuthorId = 10;
+
+        $tagRepositoryMock->expects($this->exactly(1))->method('addTags');
+
+        // Шаг 2. Act
+        $articleId = $service->createArticle(new CreateArticleParams(
+            userId: $firstAuthorId,
+            title: '(Черновик) B+ деревья',
+            tags: ['MySQL', 'PostgreSQL'],
+        ));
+        $service->deleteArticle($articleId);
+
+        // Шаг 3. Assert
+        $this->expectException(ArticleNotFoundException::class);
+        $service->getArticle($articleId);
+    }
+
     public function testBatchDeleteArticles(): void
     {
         // Шаг 1. Arrange
         // В данном случае мы только создаём сервис
-        $service = $this->createArticleService();
+        $tagRepositoryMock = $this->createMock(TagRepositoryInterface::class);
+        $service = new ArticleService(
+            new DummyTransactionalExecutor(),
+            new FakeArticleRepository(),
+            $tagRepositoryMock
+        );
         $authorId = 10;
 
         // Шаг 2. Act
@@ -132,14 +228,5 @@ class ArticleServiceUnitTest extends TestCase
         sort($expected);
         sort($actual);
         $this->assertEquals($expected, $actual, 'article tags');
-    }
-
-    private function createArticleService(): ArticleService
-    {
-        return new ArticleService(
-            new DummyTransactionalExecutor(),
-            new FakeArticleRepository(),
-            new DummyTagRepository()
-        );
     }
 }

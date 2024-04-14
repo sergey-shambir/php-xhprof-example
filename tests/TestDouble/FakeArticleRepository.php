@@ -8,6 +8,9 @@ use App\Model\Repository\ArticleRepositoryInterface;
 
 class FakeArticleRepository implements ArticleRepositoryInterface
 {
+    /**
+     * @var array<int,Article> - отображает ID статьи на объект класса Article
+     */
     private array $articlesById = [];
 
     public function findOne(int $id): ?Article
@@ -22,18 +25,7 @@ class FakeArticleRepository implements ArticleRepositoryInterface
         {
             // Генерируем фейковый ID (монотонно возрастающий)
             $id = $this->getNextArticleId();
-            // Создаём новый объект Article с новым ID
-            $article = new Article(
-                $id,
-                $article->getVersion(),
-                $article->getTitle(),
-                $article->getContent(),
-                $article->getTags(),
-                $article->getCreatedAt(),
-                $article->getCreatedBy(),
-                $article->getUpdatedAt(),
-                $article->getUpdatedBy(),
-            );
+            $article->assignIdentifier($id);
         }
         $this->articlesById[$id] = $article;
 

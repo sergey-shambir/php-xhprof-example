@@ -57,6 +57,7 @@ class ArticleRepository implements ArticleRepositoryInterface
         else
         {
             $articleId = $this->insertArticle($article);
+            $article->assignIdentifier($articleId);
         }
 
         $this->saveArticleTags($articleId, $article->getTags());

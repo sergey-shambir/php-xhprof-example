@@ -32,6 +32,11 @@ class Article
     {
     }
 
+    public function assignIdentifier(int $id): void
+    {
+        $this->id = $id;
+    }
+
     /**
      * @param int $userId
      * @param string $title

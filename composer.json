@@ -15,11 +15,7 @@
     }
   },
   "scripts": {
-    "tests": [
-      "@unit-tests",
-      "@component-tests",
-      "@functional-tests"
-    ],
+    "tests": "php vendor/bin/phpunit tests --bootstrap=tests/bootstrap.php",
     "unit-tests": "php vendor/bin/phpunit tests/Unit --bootstrap=tests/bootstrap.php",
     "component-tests": "php vendor/bin/phpunit tests/Component --bootstrap=tests/bootstrap.php",
     "functional-tests": "php vendor/bin/phpunit tests/Functional --bootstrap=tests/bootstrap.php"
