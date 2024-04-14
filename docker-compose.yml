@@ -18,7 +18,7 @@ services:
       # Параметры расширения XDebug
       - XDEBUG_MODE=debug
       - XDEBUG_CONFIG="idekey=123"
-      - PHP_IDE_CONFIG=serverName=localhost
+      - PHP_IDE_CONFIG=serverName=wiki-backend-app.local
     working_dir: /var/www
     volumes:
       - $PWD/:/var/www

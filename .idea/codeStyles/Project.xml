@@ -1,6 +1,6 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <SqlCodeStyleSettings version="6">
+    <SqlCodeStyleSettings version="7">
       <option name="SUBQUERY_OPENING" value="1" />
       <option name="SUBQUERY_CONTENT" value="2" />
       <option name="SUBQUERY_CLOSING" value="1" />
