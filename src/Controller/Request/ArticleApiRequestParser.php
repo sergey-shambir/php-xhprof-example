@@ -15,8 +15,8 @@ class ArticleApiRequestParser
     {
         return new CreateArticleParams(
             self::parseInteger($parameters, 'user_id'),
-            self::parseString($parameters, 'title', self::MAX_TITLE_LENGTH),
-            self::parseStringArray($parameters, 'tags', self::MAX_TAG_LENGTH)
+            self::parseString($parameters, 'title', maxLength: self::MAX_TITLE_LENGTH),
+            self::parseStringArray($parameters, 'tags', maxLength: self::MAX_TAG_LENGTH)
         );
     }
 
@@ -25,9 +25,9 @@ class ArticleApiRequestParser
         return new EditArticleParams(
             self::parseInteger($parameters, 'id'),
             self::parseInteger($parameters, 'user_id'),
-            self::parseString($parameters, 'title', self::MAX_TITLE_LENGTH),
+            self::parseString($parameters, 'title', maxLength: self::MAX_TITLE_LENGTH),
             self::parseString($parameters, 'content'),
-            self::parseStringArray($parameters, 'tags', self::MAX_TAG_LENGTH)
+            self::parseStringArray($parameters, 'tags', maxLength: self::MAX_TAG_LENGTH)
         );
     }
 
