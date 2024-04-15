@@ -9,7 +9,7 @@ use Slim\App;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\UriFactory;
 
-class AbstractFunctionalTestCase extends AbstractDatabaseTestCase
+abstract class AbstractFunctionalTestCase extends AbstractDatabaseTestCase
 {
     private App $slimApp;
     private UriFactory $uriFactory;

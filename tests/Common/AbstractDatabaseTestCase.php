@@ -11,17 +11,19 @@ abstract class AbstractDatabaseTestCase extends TestCase
 {
     private Connection $connection;
 
+    // Вызывается перед каждым тестирующим методом
     protected function setUp(): void
     {
         parent::setUp();
+        // Всегда начинаем транзакцию, чтобы не применять изменений к базе данных.
         $this->connection = ConnectionProvider::getConnection();
         $this->connection->beginTransaction();
-
     }
 
+    // Вызывается после каждого тестирующего метода
     protected function tearDown(): void
     {
-        // Always rollback transaction - no changes applied to test database data.
+        // Всегда откатываем транзакцию, чтобы не применять изменений к базе данных.
         $this->connection->rollback();
         parent::tearDown();
     }

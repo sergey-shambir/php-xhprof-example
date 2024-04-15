@@ -15,6 +15,31 @@ use App\Tests\Common\AbstractDatabaseTestCase;
 
 class ArticleServiceTest extends AbstractDatabaseTestCase
 {
+    /**
+     * Это ПЛОХОЙ пример теста: он проверяет всего один метод, а лучше проверять целый бизнес-сценарий.
+     * Пример оставлен для иллюстрации.
+     */
+    public function testCreateArticle(): void
+    {
+        // Шаг 1. Arrange
+        // В данном случае мы только создаём сервис
+        $service = $this->createArticleService();
+        $firstAuthorId = 10;
+
+        // Шаг 2. Act
+        $articleId = $service->createArticle(new CreateArticleParams(
+            userId: $firstAuthorId,
+            title: '(Черновик) B+ деревья',
+            tags: ['MySQL', 'PostgreSQL'],
+        ));
+
+        // Шаг 3. Assert
+        $article = $service->getArticle($articleId);
+        $this->assertEquals('(Черновик) B+ деревья', $article->getTitle());
+        $this->assertArticleTags(['MySQL', 'PostgreSQL'], $article);
+        $this->assertEquals($firstAuthorId, $article->getCreatedBy());
+    }
+
     public function testCreateEditAndDeleteArticle(): void
     {
         // Шаг 1. Arrange

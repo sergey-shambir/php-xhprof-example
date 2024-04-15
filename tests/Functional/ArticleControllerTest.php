@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class ArticleControllerTest extends AbstractFunctionalTestCase
 {
-    public function testCreateEditAndDeleteArticle()
+    public function testCreateAndEditArticle()
     {
         // Шаг 1. Arrange
         $firstAuthorId = 10;
