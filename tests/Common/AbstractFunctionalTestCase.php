@@ -63,7 +63,7 @@ abstract class AbstractFunctionalTestCase extends AbstractDatabaseTestCase
 
     private function doRequest(string $method, string $url, array $body = []): ResponseInterface
     {
-        // Создаём объект, реализуюзий интерфейс RequestInterface из PSR-7
+        // Создаём объект, реализующий интерфейс RequestInterface из PSR-7
         $uri = $this->uriFactory->createUri($url);
 
         $request = $this->serverRequestFactory
