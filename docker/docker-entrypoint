@@ -44,9 +44,22 @@ xdebug.max_nesting_level = 2048
 EOL
 }
 
+enable_php_xhprof() {
+  configure_xhprof
+  docker-php-ext-enable xhprof
+}
+
+configure_xhprof() {
+  cat >"$PHP_INI_DIR/conf.d/30-xhprof.ini" <<EOL
+[xhprof]
+xhprof.output_dir=/var/www/xhprof
+EOL
+}
+
 echo "Configuring local development environment..."
 add_local_user
 set_folder_permissions
 enable_php_xdebug
+enable_php_xhprof
 
 exec php-fpm

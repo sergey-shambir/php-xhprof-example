@@ -3,7 +3,7 @@ version: '3.8'
 services:
   wiki-backend-app:
     container_name: wiki-backend-app
-    build: $PWD/docker/image
+    build: ./docker/image
     command:
       - /var/www/docker/docker-entrypoint
     environment:
@@ -14,14 +14,14 @@ services:
       - APP_DATABASE_PASSWORD=kUUTyU7LssSc
       # Параметры скрипта docker-entrypoint
       - USER_ID=${USER_ID:-1000}
-      - USER_NAME=$USER
+      - USER_NAME=${USER:-local}
       # Параметры расширения XDebug
       - XDEBUG_MODE=debug
       - XDEBUG_CONFIG="idekey=123"
       - PHP_IDE_CONFIG=serverName=wiki-backend-app.local
     working_dir: /var/www
     volumes:
-      - $PWD/:/var/www
+      - ./:/var/www
     depends_on:
       - wiki-backend-db
     extra_hosts:
@@ -32,12 +32,13 @@ services:
     container_name: wiki-backend-nginx
     working_dir: /var/www
     volumes:
-      - $PWD/:/var/www
-      - $PWD/docker/config/nginx.conf.d/:/etc/nginx/conf.d/:ro
+      - ./:/var/www
+      - ./docker/config/nginx.conf.d/:/etc/nginx/conf.d/:ro
+      - ./docker/config/nginx.conf:/etc/nginx.conf:ro
     depends_on:
       - wiki-backend-app
     ports:
-      - "127.0.0.1:80:80"
+      - "127.0.0.1:8080:80"
 
   wiki-backend-db:
     image: mysql:8.0.32
@@ -49,10 +50,8 @@ services:
       - MYSQL_PASSWORD=kUUTyU7LssSc
       - MYSQL_DATABASE=wiki_backend
     volumes:
-      - $PWD/docker/config/mysql.conf.d:/etc/mysql/conf.d/:ro
+      - ./docker/config/mysql.conf.d:/etc/mysql/conf.d/:ro
       - wiki_backend_db_data:/var/lib/mysql
-    ports:
-      - "127.0.0.1:3306:3306"
 
   wiki-backend-tests-db:
     image: mysql:8.0.32
@@ -64,10 +63,8 @@ services:
       - MYSQL_PASSWORD=ahm3eKoh
       - MYSQL_DATABASE=wiki_backend
     volumes:
-      - $PWD/docker/config/mysql.conf.d:/etc/mysql/conf.d/:ro
+      - ./docker/config/mysql.conf.d:/etc/mysql/conf.d/:ro
       - wiki_backend_test_db_data:/var/lib/mysql
-    ports:
-      - "127.0.0.1:13306:3306"
 
 volumes:
   wiki_backend_db_data:

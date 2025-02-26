@@ -1,0 +1,1 @@
+docker exec --interactive --tty --user "local:www-data" wiki-backend-app /bin/bash

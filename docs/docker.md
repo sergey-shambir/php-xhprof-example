@@ -21,10 +21,10 @@ sudo usermod -a -G www-data $USER
 
 Эффект наступит после Sign Out / Sign In либо перезагрузки.
 
-## Использование
+## Настройка проекта
 
 ```bash
-# Собрать образ (выполняется один раз)
+# Собрать образ
 docker-compose build
 
 # Запустить контейнеры в фоновом режиме
@@ -33,10 +33,25 @@ docker-compose up -d
 # Проверить состояние контейнеров
 docker-compose ps
 
-# Инициализация баз данных
+# Запустить bash в контейнере с php и установить зависимости
+docker\bin\wiki-backend-app-bash
+composer install
+exit
+
+# Инициализировать базу данных
 docker exec -i wiki-backend-db mysql -proh6shiD <data/init.sql && echo OK
 
 docker exec -i wiki-backend-tests-db mysql -proh6shiD <data/init.sql && echo OK
+```
+
+## Использование
+
+```bash
+# Запустить контейнеры в фоновом режиме
+docker-compose up -d
+
+# Проверить состояние контейнеров
+docker-compose ps
 
 # Смотреть логи контейнеров (Ctrl+C для остановки)
 docker-compose logs -f

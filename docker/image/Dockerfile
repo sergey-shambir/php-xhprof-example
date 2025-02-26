@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-bullseye
+FROM php:8.1-fpm-bullseye
 
 # Suppress Node update notifications
 ENV NO_UPDATE_NOTIFIER=true
