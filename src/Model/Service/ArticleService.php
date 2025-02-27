@@ -11,7 +11,7 @@ use App\Model\Exception\ArticleNotFoundException;
 use App\Model\Repository\ArticleRepositoryInterface;
 use App\Model\Repository\TagRepositoryInterface;
 
-readonly class ArticleService
+class ArticleService
 {
     public function __construct(
         private TransactionalExecutorInterface $transactionalExecutor,

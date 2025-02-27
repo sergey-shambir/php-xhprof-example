@@ -38,10 +38,12 @@ docker\bin\wiki-backend-app-bash
 composer install
 exit
 
-# Инициализировать базу данных
-docker exec -i wiki-backend-db mysql -proh6shiD <data/init.sql && echo OK
-
+# Инициализировать базу данных (версия для Linux)
+docker exec -i wiki-backend-db mysql -pVIzP6LTScyYy <data/init.sql && echo OK
 docker exec -i wiki-backend-tests-db mysql -proh6shiD <data/init.sql && echo OK
+
+# Инициализировать базу данных (версия для Windows)
+docker\bin\wiki-backend-init-db
 ```
 
 ## Использование
