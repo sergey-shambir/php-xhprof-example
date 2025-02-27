@@ -25,6 +25,10 @@ set_folder_permissions() {
   chgrp www-data -R "$PROJECT_ROOT"
 }
 
+enable_php_opcache() {
+  docker-php-ext-enable opcache
+}
+
 enable_php_xdebug() {
   configure_xdebug
   docker-php-ext-enable xdebug
@@ -52,13 +56,14 @@ enable_php_xhprof() {
 configure_xhprof() {
   cat >"$PHP_INI_DIR/conf.d/30-xhprof.ini" <<EOL
 [xhprof]
-xhprof.output_dir=/var/www/xhprof
+xhprof.output_dir=/var/www/data/xhprof
 EOL
 }
 
 echo "Configuring local development environment..."
 add_local_user
 set_folder_permissions
+enable_php_opcache
 enable_php_xdebug
 enable_php_xhprof
 

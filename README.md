@@ -1,46 +1,91 @@
-# Пример: простейший сервис для хранения статей внутренней Wiki
+# Установка Docker и docker-compose
 
-Пример для курса "Базы данных", сделан на PHP8 и MySQL8, проверен на Linux.
+## Установка в Ubuntu Linux
 
-В этом примере есть:
+Официальные инструкции:
 
-1. Работа с транзакциями (см. классы `ArticleService` и `Synchronization`)
-2. INSERT ODKU, также известный как UPSERT (см. классы `ArticleRepository`, `TagRepository`)
-3. Применение оптимистичной блокировки (см. класс `ArticleRepository`)
+- Docker CE для Ubuntu: https://docs.docker.com/engine/install/ubuntu/#install-docker-ce
+- Docker Compose V1: https://docs.docker.com/compose/install/other/
 
-## Схема БД
+Рекомендуется добавить текущего пользователя в группы docker и www-data, чтобы:
 
-![Schema](docs/wiki-backend-schema.png)
+1. Использовать команду `docker` без `sudo`
+2. Предоставлять доступ к файлам проекта пользователю `www-data` в docker-контейнере
 
-## Запуск примера на Linux
+Добавление в группы:
 
-Краткий план действий:
+```bash
+sudo usermod -a -G docker $USER
+sudo usermod -a -G www-data $USER
+```
 
-1. Установить docker и docker-compose
-2. Запустить контейнеры по инструкции из файла `docs/docker.md`
-3. Открыть в MySQL Workbench и выполнить последовательно SQL запросы из двух файлов:
-   - `data/create_user.sql`
-   - `data/init.sql`
-4. Открыть в браузере http://localhost
+Эффект наступит после Sign Out / Sign In либо перезагрузки.
 
-В идеале у вас:
-- По адресу http://localhost/articles/list отдаётся пустой JSON массив
-- При включении XDebug отладка работает
+## Настройка проекта
 
-## Запуск примера в Windows
+```bash
+# Собрать образ
+docker-compose build
 
-Краткий план действий:
+# Запустить контейнеры в фоновом режиме
+docker-compose up -d
 
-1. Установить MySQL 8 и PHP 8.2
-2. Запустить MySQL server
-3. Открыть в MySQL Workbench и выполнить последовательно SQL запросы из двух файлов:
-   - `data/create_user.sql`
-   - `data/init.sql`
-4. Открыть консоль и запустить отладочный сервер PHP:
-    - `cd public`
-    - `php -S localhost:8888`
-5. Открыть в браузере `http://localhost:8888/articles/list` - будет пустой JSON массив
+# Проверить состояние контейнеров
+docker-compose ps
+
+# Запустить bash в контейнере с php и установить зависимости
+docker\bin\wiki-backend-app-bash
+composer install
+exit
+
+# Инициализировать базу данных
+docker\bin\wiki-backend-init-db
+```
 
 ## Проверка работы
 
 Проверить работу можно с помощью Postman. Готовые запросы можно импортировать в Postman из файла `docs/Postman.json`.
+
+## Просмотр результатов профилирования
+
+UI для просмотра результатов: http://localhost:8081/
+
+Каталог проекта, где хранятся данные: `data/xhprof/`
+
+## Обслуживание docker--контейнеров
+
+```bash
+# Запустить контейнеры в фоновом режиме
+docker-compose up -d
+
+# Проверить состояние контейнеров
+docker-compose ps
+
+# Смотреть логи контейнеров (Ctrl+C для остановки)
+docker-compose logs -f
+
+# Открыть сессию bash в контейнере
+docker/bin/wiki-backend-app-bash
+
+# Остановить контейнеры
+docker-compose down --remove-orphans
+
+```
+
+Чистка данных:
+
+```bash
+# УДАЛИТЬ ВСЕ ДАННЫЕ локальной базы данных (находятся в docker volume)
+docker volume rm 4_wiki_backend_wiki_backend_db_data
+```
+
+## Использование XDebug
+
+Для отладки используйте XDebug:
+
+1. Docker-контейнеры настраивать не надо, в них xdebug уже включён и настроен на подключение к локальному хосту
+2. Для браузера установите расширение XDebug Helper
+    - Chrome: https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc
+    - Firefox: https://addons.mozilla.org/en-US/firefox/addon/xdebug-helper-for-firefox/
+3. В своей IDE настройте работу с XDebug, используя любую инструкцию для docker-контейнеров
+    - Для PhpStorm раздел "PHP > Servers" уже настроен как полагается

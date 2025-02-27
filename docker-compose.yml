@@ -40,6 +40,19 @@ services:
     ports:
       - "127.0.0.1:8080:80"
 
+  wiki-backend-nginx-xhprof:
+    image: nginx:1.17
+    container_name: wiki-backend-nginx-xhprof
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/config/nginx.conf.d-xhprof/:/etc/nginx/conf.d/:ro
+      - ./docker/config/nginx.conf:/etc/nginx.conf:ro
+    depends_on:
+      - wiki-backend-app
+    ports:
+      - "127.0.0.1:8081:80"
+
   wiki-backend-db:
     image: mysql:8.0.32
     container_name: wiki-backend-db
